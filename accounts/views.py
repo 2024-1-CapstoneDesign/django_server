@@ -134,24 +134,24 @@ def google_callback_re(request):
         return res
     return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-def get_redirect_url(request):
-    host = request.META.get('HTTP_REFERER')
-    scheme = request.scheme
+# def get_redirect_url(request):
+#     host = request.META.get('HTTP_REFERER')
+#     scheme = request.scheme
     
-    if host == 'http://localhost:3000/':
-        redirect_uri = 'http://localhost:3000'
-    else:ite
-        redirect_uri = 'https://ses-website-falconlee236s-projects.vercel.app'
+#     if host == 'http://localhost:3000/':
+#         redirect_uri = 'http://localhost:3000'
+#     else:ite
+#         redirect_uri = 'https://ses-website-falconlee236s-projects.vercel.app'
         
         
-    # 로그 console 출력
-    # logger = logging.getLogger()
-    # logger.setLevel(logging.INFO)
+#     # 로그 console 출력
+#     # logger = logging.getLogger()
+#     # logger.setLevel(logging.INFO)
     
-    # logger.warning(host)
-    # logger.warning(redirect_uri)
+#     # logger.warning(host)
+#     # logger.warning(redirect_uri)
 
-    # stream_handler = logging.StreamHandler()
-    # logger.addHandler(stream_handler)
+#     # stream_handler = logging.StreamHandler()
+#     # logger.addHandler(stream_handler)
 
-    return redirect_uri
+#     return redirect_uri
