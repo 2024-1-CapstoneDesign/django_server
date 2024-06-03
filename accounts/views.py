@@ -139,7 +139,7 @@ def get_redirect_url(request):
     scheme = request.scheme
     
     if host == 'http://localhost:3000/':
-        redirect_uri = 'http://localhost:3000/'
+        redirect_uri = 'http://localhost:3000'
     else:
         redirect_uri = 'https://ses-website-falconlee236s-projects.vercel.app'
         
