@@ -88,7 +88,7 @@ def google_callback_re(request):
     redirect_uri = get_redirect_url(request)
 
     token_req = requests.post(
-        f"https://oauth2.googleapis.com/token?client_id={GOOGLE_CLIENT_ID}&client_secret={GOOGLE_SECRET}&code={code}&grant_type=authorization_code&redirect_uri={redirect_uri}"
+        f"https://oauth2.googleapis.com/token?client_id={GOOGLE_CLIENT_ID}&client_secret={GOOGLE_SECRET}&code={code}&grant_type=authorization_code&redirect_uri={"http://localhost:3000"}"
     )
     token_req_json = token_req.json()
     error = token_req_json.get("error")
