@@ -1,5 +1,5 @@
 from django.http import HttpResponse
-from pytube import YouTube
+from pytube import *
 from moviepy.editor import VideoFileClip, AudioFileClip
 import os
 import shutil
