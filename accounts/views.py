@@ -85,10 +85,10 @@ def google_callback(request):
 def google_callback_re(request):
     code = request.GET.get("code")  # Query String 으로 넘어옴
 
-    redirect_uri = get_redirect_url(request)
+    redirect_uri = "http://localhost:3000"
 
     token_req = requests.post(
-        f"https://oauth2.googleapis.com/token?client_id={GOOGLE_CLIENT_ID}&client_secret={GOOGLE_SECRET}&code={code}&grant_type=authorization_code&redirect_uri={"http://localhost:3000"}"
+        f"https://oauth2.googleapis.com/token?client_id={GOOGLE_CLIENT_ID}&client_secret={GOOGLE_SECRET}&code={code}&grant_type=authorization_code&redirect_uri={redirect_uri}"
     )
     token_req_json = token_req.json()
     error = token_req_json.get("error")
@@ -140,7 +140,7 @@ def get_redirect_url(request):
     
     if host == 'http://localhost:3000/':
         redirect_uri = 'http://localhost:3000'
-    else:
+    else:ite
         redirect_uri = 'https://ses-website-falconlee236s-projects.vercel.app'
         
         
