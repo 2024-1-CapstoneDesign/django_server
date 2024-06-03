@@ -145,13 +145,13 @@ def get_redirect_url(request):
         
         
     # 로그 console 출력
-    logger = logging.getLogger()
-    logger.setLevel(logging.INFO)
+    # logger = logging.getLogger()
+    # logger.setLevel(logging.INFO)
     
-    logger.warning(host)
-    logger.warning(redirect_uri)
+    # logger.warning(host)
+    # logger.warning(redirect_uri)
 
-    stream_handler = logging.StreamHandler()
-    logger.addHandler(stream_handler)
+    # stream_handler = logging.StreamHandler()
+    # logger.addHandler(stream_handler)
 
     return redirect_uri
