@@ -13,6 +13,7 @@ idna==3.7
 imageio==2.34.1
 imageio-ffmpeg==0.5.0
 moviepy==1.0.3
+mysqlclient==2.2.4
 numpy==1.26.4
 pillow==10.3.0
 proglog==0.1.10
@@ -25,3 +26,4 @@ setuptools==70.0.0
 sqlparse==0.5.0
 tqdm==4.66.4
 urllib3==2.2.1
+wheel==0.43.0

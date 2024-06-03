@@ -108,10 +108,14 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+	'default': {
+		'ENGINE': 'django.db.backends.mysql',
+		'NAME': 'capstone',
+		'USER': 'admin',
+		'PASSWORD': get_secret("DB_PASSWORD"),
+		'HOST': 'capstone.c1mwaqe06dix.ap-northeast-2.rds.amazonaws.com',
+		'PORT': '3306',
+	}
 }
 
 AUTH_USER_MODEL = "accounts.User"
