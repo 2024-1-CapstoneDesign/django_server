@@ -29,7 +29,7 @@ GOOGLE_CLIENT_ID = get_secret("GOOGLE_CLIENT_ID")
 GOOGLE_SECRET = get_secret("GOOGLE_SECRET")
 
 def google_login(request):
-    scope = GOOGLE_SCOPE_USERINFO  # + "https://www.googleapis.com/auth/drive.readonly" 등 scope 설정 후 자율적으로 추가
+    scope = GOOGLE_SCOPE_USERINFO # + "https://www.googleapis.com/auth/drive.readonly" 등 scope 설정 후 자율적으로 추가
     return redirect(f"{GOOGLE_REDIRECT}?client_id={GOOGLE_CLIENT_ID}&response_type=code&redirect_uri={GOOGLE_CALLBACK_URI}&scope={scope}")
 
 def google_callback(request):
@@ -85,7 +85,7 @@ def google_callback(request):
 def google_callback_re(request):
     code = request.GET.get("code")  # Query String 으로 넘어옴
 
-    redirect_uri = "http://localhost:3000"
+    redirect_uri = get_redirect_url(request)
 
     token_req = requests.post(
         f"https://oauth2.googleapis.com/token?client_id={GOOGLE_CLIENT_ID}&client_secret={GOOGLE_SECRET}&code={code}&grant_type=authorization_code&redirect_uri={redirect_uri}"
@@ -96,19 +96,29 @@ def google_callback_re(request):
     if error is not None:
         raise JSONDecodeError(error)
 
+
     google_access_token = token_req_json.get('access_token')
 
-    email_response = requests.get(f"https://www.googleapis.com/oauth2/v1/tokeninfo?access_token={google_access_token}")
-    res_status = email_response.status_code
+    user_info_response = requests.get(
+        "https://www.googleapis.com/oauth2/v3/userinfo",
+        params={
+            'access_token': google_access_token
+        }
+    )
+
+    res_status = user_info_response.status_code
+
 
     if res_status != 200:
         return JsonResponse({'status': 400, 'message': 'Bad Request'}, status=status.HTTP_400_BAD_REQUEST)
 
-    email_res_json = email_response.json()
+    user_info_json = user_info_response.json()
 
-    serializer = OAuthSerializer(data=email_res_json)
+    serializer = OAuthSerializer(data=user_info_json)
     if serializer.is_valid(raise_exception=True):
         user = serializer.validated_data["user"]
+        name = serializer.validated_data["name"]
+        picture = serializer.validated_data["picture"]
         access_token = serializer.validated_data["access_token"]
         refresh_token = serializer.validated_data["refresh_token"]
 
@@ -120,6 +130,8 @@ def google_callback_re(request):
                 "user": {
                     "id": user.id,
                     "email": user.email,
+                    "name": name,
+                    "picture":picture,
                 },
                 "message": "login success",
                 "token": {
@@ -134,24 +146,13 @@ def google_callback_re(request):
         return res
     return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# def get_redirect_url(request):
-#     host = request.META.get('HTTP_REFERER')
-#     scheme = request.scheme
-    
-#     if host == 'http://localhost:3000/':
-#         redirect_uri = 'http://localhost:3000'
-#     else:ite
-#         redirect_uri = 'https://ses-website-falconlee236s-projects.vercel.app'
-        
-        
-#     # 로그 console 출력
-#     # logger = logging.getLogger()
-#     # logger.setLevel(logging.INFO)
-    
-#     # logger.warning(host)
-#     # logger.warning(redirect_uri)
+def get_redirect_url(request):
+    host = request.META.get('HTTP_REFERER')
+    scheme = request.scheme
 
-#     # stream_handler = logging.StreamHandler()
-#     # logger.addHandler(stream_handler)
+    if host == 'http://localhost:3000/':
+        redirect_uri = 'http://localhost:3000'
+    else:
+        redirect_uri = 'https://ses-website-falconlee236s-projects.vercel.app'
 
-#     return redirect_uri
+    return redirect_uri
