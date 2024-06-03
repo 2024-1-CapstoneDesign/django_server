@@ -85,8 +85,10 @@ def google_callback(request):
 def google_callback_re(request):
     code = request.GET.get("code")  # Query String 으로 넘어옴
 
+    redirect_uri = get_redirect_url(request)
+
     token_req = requests.post(
-        f"https://oauth2.googleapis.com/token?client_id={GOOGLE_CLIENT_ID}&client_secret={GOOGLE_SECRET}&code={code}&grant_type=authorization_code&redirect_uri={GOOGLE_CALLBACK_URI}"
+        f"https://oauth2.googleapis.com/token?client_id={GOOGLE_CLIENT_ID}&client_secret={GOOGLE_SECRET}&code={code}&grant_type=authorization_code&redirect_uri={redirect_uri}"
     )
     token_req_json = token_req.json()
     error = token_req_json.get("error")
@@ -131,3 +133,25 @@ def google_callback_re(request):
         res.set_cookie("refresh-token", refresh_token, httponly=True)
         return res
     return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+def get_redirect_url(request):
+    host = request.META.get('HTTP_REFERER')
+    scheme = request.scheme
+    
+    if host == 'http://localhost:3000/':
+        redirect_uri = 'http://localhost:3000/'
+    else:
+        redirect_uri = 'https://ses-website-falconlee236s-projects.vercel.app'
+        
+        
+    # 로그 console 출력
+    logger = logging.getLogger()
+    logger.setLevel(logging.INFO)
+    
+    logger.warning(host)
+    logger.warning(redirect_uri)
+
+    stream_handler = logging.StreamHandler()
+    logger.addHandler(stream_handler)
+
+    return redirect_uri
