@@ -44,7 +44,7 @@ CORS_ALLOWED_ORIGINS = [
     "https://ses-website.vercel.app",
     "https://ses-website-falconlee236s-projects.vercel.app",
     "https://ses-website-git-main-falconlee236s-projects.vercel.app",
-    
+    "https://ses-website-6q8ehj8ad-falconlee236s-projects.vercel.app",
 ]
 # Application definition
 
