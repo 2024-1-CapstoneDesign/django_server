@@ -8,6 +8,7 @@ from django.core.exceptions import ImproperlyConfigured
 from pathlib import Path
 import os, json
 from django.contrib.auth import login
+from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 secret_file = os.path.join(BASE_DIR, "secrets.json")
@@ -156,3 +157,18 @@ def get_redirect_url(request):
         redirect_uri = host[:-1]
 
     return redirect_uri
+
+def get_user_from_access_token(request):
+    access_token = request.GET.get("accessToken")
+
+    try:
+        access_token_obj = AccessToken(access_token)
+        access_token_obj.check_exp()
+    except(TokenError, InvalidToken):
+        # response_data = {'error':'Token is expired or invalid.'}
+        return None
+    
+    member_id=access_token_obj['user_id']
+    return JsonResponse({
+            "member_id": member_id
+        })

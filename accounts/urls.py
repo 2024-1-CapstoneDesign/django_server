@@ -11,8 +11,9 @@ urlpatterns = [
     path("google/callback/", google_callback, name="google_callback"),
     path("google/callback/re/", google_callback_re, name="google_callback"),
 
-
     path("token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("token/verify/", TokenVerifyView.as_view(), name="token_verify"),
+
+    path("member/", get_user_from_access_token, name="get_user_from_access_token"),
 ]

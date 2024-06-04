@@ -4,12 +4,13 @@ from moviepy.editor import VideoFileClip, AudioFileClip
 import os
 import shutil
 import uuid
+import requests
 
 def download_youtube_audio(request):
     if request.method == "GET":
         url = request.GET.get('url')
-        start_time = float(request.GET.get('start_time'))
-        end_time = float(request.GET.get('end_time'))
+        start_time = float(request.GET.get('from'))
+        end_time = float(request.GET.get('to'))
 
         # 임시 파일을 저장할 경로
         temp_dir = '/tmp'  # 적절한 경로로 변경하세요
@@ -41,9 +42,14 @@ def download_youtube_audio(request):
             with open(temp_audio_file, 'rb') as audio_file:
                 audio_bytes = audio_file.read()
 
-            response = HttpResponse(content=audio_bytes, content_type='audio/wav')
-            response['Content-Disposition'] = 'attachment; filename="audio.wav"'
-            return response
+            # response = HttpResponse(content=audio_bytes, content_type='audio/wav')
+            # response['Content-Disposition'] = 'attachment; filename="audio.wav"'
+
+            url = "https://model-o5rcbmo3sq-du.a.run.app/predict"
+            file = {"file": open(temp_audio_file, 'rb')}
+            response = requests.post(url, files=file)
+
+            return HttpResponse(content=response)
         finally:
             # 임시 파일 삭제
             if os.path.exists(temp_video_file):
