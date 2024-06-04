@@ -41,6 +41,10 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [ 
     "http://localhost:3000",
     "http://127.0.0.1:3000",
+    "https://ses-website.vercel.app",
+    "https://ses-website-falconlee236s-projects.vercel.app",
+    "https://ses-website-git-main-falconlee236s-projects.vercel.app",
+    
 ]
 # Application definition
 

@@ -153,6 +153,6 @@ def get_redirect_url(request):
     if host == 'http://localhost:3000/':
         redirect_uri = 'http://localhost:3000'
     else:
-        redirect_uri = 'https://ses-website-falconlee236s-projects.vercel.app'
+        redirect_uri = host[:-1]
 
     return redirect_uri
