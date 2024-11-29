@@ -1,5 +1,6 @@
 from django.http import HttpResponse, JsonResponse
-from pytube import YouTube
+from pytubefix import YouTube
+from pytubefix.cli import on_progress
 from moviepy.editor import VideoFileClip
 import os
 import uuid
@@ -32,14 +33,14 @@ def download_youtube_audio(request):
         temp_audio_file = os.path.join(temp_dir, str(uuid.uuid4()) + '.wav')
 
         try:
-            yt = YouTube(url)
-            # 오디오 스트림만 필터링하여 다운로드
-            video = yt.streams.filter(only_audio=True).first()
+            yt = YouTube(url, on_progress_callback=on_progress)
+            print(yt.title)
 
             if not video:
                 return JsonResponse({'error': 'No audio stream available for this video'}, status=400)
-
-            video.download(output_path=temp_dir, filename=os.path.basename(temp_video_file))
+            
+            ys = yt.streams.get_audio_only()
+            ys.download(output_path=temp_dir, filename=os.path.basename(temp_video_file))
             print("download success")
 
             # 비디오 파일 열기
