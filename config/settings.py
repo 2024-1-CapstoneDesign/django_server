@@ -98,15 +98,22 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+# DATABASES = {
+# 	'default': {
+# 		'ENGINE': 'django.db.backends.mysql',
+# 		'NAME': 'aulo',
+# 		'USER': 'admin',
+# 		'PASSWORD': get_secret("DB_PASSWORD"),
+# 		'HOST': 'ses-aulo.c944s0sio1z7.ap-northeast-2.rds.amazonaws.com',
+# 		'PORT': '3306',
+# 	}
+# }
+
 DATABASES = {
-	'default': {
-		'ENGINE': 'django.db.backends.mysql',
-		'NAME': 'aulo',
-		'USER': 'admin',
-		'PASSWORD': get_secret("DB_PASSWORD"),
-		'HOST': 'ses-aulo.c944s0sio1z7.ap-northeast-2.rds.amazonaws.com',
-		'PORT': '3306',
-	}
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
 
 # AUTH_USER_MODEL = "accounts.User"
