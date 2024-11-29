@@ -33,13 +33,18 @@ def download_youtube_audio(request):
         temp_audio_file = os.path.join(temp_dir, str(uuid.uuid4()) + '.wav')
 
         try:
+            # PoToken 없이 YouTube 객체 생성 (해상도 낮추기)
             yt = YouTube(url, on_progress_callback=on_progress)
             print(yt.title)
 
-            if not video:
-                return JsonResponse({'error': 'No audio stream available for this video'}, status=400)
-            
-            ys = yt.streams.get_audio_only()
+            # 360p 또는 480p 해상도의 비디오 스트림 선택
+            ys = yt.streams.filter(progressive=True, res="360p").first()  # 360p 해상도 스트림
+            if not ys:
+                ys = yt.streams.filter(progressive=True, res="480p").first()  # 480p 해상도 스트림
+
+            if not ys:
+                return JsonResponse({'error': 'No available streams with low resolution'}, status=400)
+
             ys.download(output_path=temp_dir, filename=os.path.basename(temp_video_file))
             print("download success")
 
@@ -84,4 +89,3 @@ def download_youtube_audio(request):
                     os.remove(temp_audio_file)
             except Exception as e:
                 print(f"Error deleting temporary files: {str(e)}")
-                
