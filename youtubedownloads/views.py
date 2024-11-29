@@ -12,6 +12,7 @@ def download_youtube_audio(request):
         end_time = float(request.GET.get('to'))
 
         if not url or not start_time or not end_time:
+            print(f"Received parameters - URL: {url}, From: {start_time}, To: {end_time}")
             return JsonResponse({'error': 'Missing required parameters'}, status=400)
 
         print("url: {0}".format(url))
