@@ -12,6 +12,10 @@ def download_youtube_audio(request):
         start_time = float(request.GET.get('from'))
         end_time = float(request.GET.get('to'))
 
+        print("url: {0}".format(url))
+        print("from: {0}".format(start_time))
+        print("to: {0}".format(end_time))
+
         # 임시 파일을 저장할 경로
         temp_dir = '/tmp'  # 적절한 경로로 변경하세요
 
