@@ -1,8 +1,7 @@
-from django.http import HttpResponse
-from pytube import *
-from moviepy.editor import VideoFileClip, AudioFileClip
+from django.http import HttpResponse, JsonResponse
+from pytube import YouTube
+from moviepy.editor import VideoFileClip
 import os
-import shutil
 import uuid
 import requests
 
@@ -11,6 +10,9 @@ def download_youtube_audio(request):
         url = request.GET.get('url')
         start_time = float(request.GET.get('from'))
         end_time = float(request.GET.get('to'))
+
+        if not url or not start_time or not end_time:
+            return JsonResponse({'error': 'Missing required parameters'}, status=400)
 
         print("url: {0}".format(url))
         print("from: {0}".format(start_time))
@@ -25,9 +27,13 @@ def download_youtube_audio(request):
 
         try:
             yt = YouTube(url)
-            video = yt.streams.filter().first()
-            video.download(output_path=temp_dir, filename=os.path.basename(temp_video_file))
+            # 오디오 스트림만 필터링하여 다운로드
+            video = yt.streams.filter(only_audio=True).first()
 
+            if not video:
+                return JsonResponse({'error': 'No audio stream available for this video'}, status=400)
+
+            video.download(output_path=temp_dir, filename=os.path.basename(temp_video_file))
             print("download success")
 
             # 비디오 파일 열기
@@ -48,17 +54,27 @@ def download_youtube_audio(request):
             with open(temp_audio_file, 'rb') as audio_file:
                 audio_bytes = audio_file.read()
 
-            # response = HttpResponse(content=audio_bytes, content_type='audio/wav')
-            # response['Content-Disposition'] = 'attachment; filename="audio.wav"'
-
+            # 외부 서버로 오디오 파일을 전송
             url = "https://model-o5rcbmo3sq-du.a.run.app/predict"
-            file = {"file": open(temp_audio_file, 'rb')}
-            response = requests.post(url, files=file)
+            files = {"file": open(temp_audio_file, 'rb')}
+            response = requests.post(url, files=files)
 
-            return HttpResponse(content=response)
+            # 서버 응답을 그대로 반환
+            if response.status_code == 200:
+                return HttpResponse(content=response.content, content_type='application/json')
+            else:
+                return JsonResponse({'error': 'Failed to process the audio file on the external server'}, status=500)
+
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+
         finally:
             # 임시 파일 삭제
-            if os.path.exists(temp_video_file):
-                os.remove(temp_video_file)
-            if os.path.exists(temp_audio_file):
-                os.remove(temp_audio_file)
+            try:
+                if os.path.exists(temp_video_file):
+                    os.remove(temp_video_file)
+                if os.path.exists(temp_audio_file):
+                    os.remove(temp_audio_file)
+            except Exception as e:
+                print(f"Error deleting temporary files: {str(e)}")
+                
