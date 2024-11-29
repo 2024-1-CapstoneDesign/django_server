@@ -11,6 +11,8 @@ def download_youtube_audio(request):
         url = request.GET.get('url')
         start_time = float(request.GET.get('from'))
         end_time = float(request.GET.get('to'))
+        visitor_data = request.GET.get('visitorData')  # PoToken 사용을 위해 방문자 데이터 추가
+        po_token = request.GET.get('poToken')  # PoToken 추가
 
         if not url:
             return JsonResponse({'error': 'Missing url'}, status=400)
@@ -20,6 +22,9 @@ def download_youtube_audio(request):
         
         if not end_time:
             return JsonResponse({'error': 'Missing end_time'}, status=400)
+        
+        if not visitor_data or not po_token:
+            return JsonResponse({'error': 'Missing visitorData or poToken'}, status=400)
 
         print("url: {0}".format(url))
         print("from: {0}".format(start_time))
@@ -33,18 +38,14 @@ def download_youtube_audio(request):
         temp_audio_file = os.path.join(temp_dir, str(uuid.uuid4()) + '.wav')
 
         try:
-            # PoToken 없이 YouTube 객체 생성 (해상도 낮추기)
-            yt = YouTube(url, on_progress_callback=on_progress)
+            # PoToken과 visitorData를 사용하여 YouTube 객체 생성
+            yt = YouTube(url, use_po_token=True, visitor_data=visitor_data, po_token=po_token, on_progress_callback=on_progress)
             print(yt.title)
 
-            # 360p 또는 480p 해상도의 비디오 스트림 선택
-            ys = yt.streams.filter(progressive=True, res="360p").first()  # 360p 해상도 스트림
-            if not ys:
-                ys = yt.streams.filter(progressive=True, res="480p").first()  # 480p 해상도 스트림
-
-            if not ys:
-                return JsonResponse({'error': 'No available streams with low resolution'}, status=400)
-
+            if not yt:
+                return JsonResponse({'error': 'No audio stream available for this video'}, status=400)
+            
+            ys = yt.streams.get_audio_only()
             ys.download(output_path=temp_dir, filename=os.path.basename(temp_video_file))
             print("download success")
 
