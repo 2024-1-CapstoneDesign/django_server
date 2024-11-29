@@ -28,6 +28,8 @@ def download_youtube_audio(request):
             video = yt.streams.filter().first()
             video.download(output_path=temp_dir, filename=os.path.basename(temp_video_file))
 
+            print("download success")
+
             # 비디오 파일 열기
             clip = VideoFileClip(temp_video_file)
 
