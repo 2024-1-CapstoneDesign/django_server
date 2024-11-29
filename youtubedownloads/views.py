@@ -8,8 +8,8 @@ import requests
 def download_youtube_audio(request):
     if request.method == "GET":
         url = request.GET.get('url')
-        start_time = float(request.GET.get('from'))
-        end_time = float(request.GET.get('to'))
+        start_time = request.GET.get('from')
+        end_time = request.GET.get('to')
 
         if not url:
             return JsonResponse({'error': 'Missing url'}, status=400)
