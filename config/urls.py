@@ -19,7 +19,5 @@ from youtubedownloads import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/', include("accounts.urls")),
-    path("accounts/", include("allauth.urls")),
     path('download/', views.download_youtube_audio, name='download_video'),
 ]

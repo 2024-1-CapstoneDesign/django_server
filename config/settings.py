@@ -39,18 +39,11 @@ ALLOWED_HOSTS = ['*']
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = [ 
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    "https://ses-website.vercel.app",
-    "https://ses-website-falconlee236s-projects.vercel.app",
-    "https://ses-website-git-main-falconlee236s-projects.vercel.app",
-    "https://ses-website-6q8ehj8ad-falconlee236s-projects.vercel.app",
 ]
 # Application definition
 
 DJANGO_APPS = [
     'django.contrib.admin',
-    'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -58,18 +51,12 @@ DJANGO_APPS = [
 ]
 
 PROJECT_APPS = [
-    'accounts',
     'youtubedownloads',
 ]
 
 THIRD_PARTY_APPS = [
     'corsheaders',
     'rest_framework',
-    'rest_framework_simplejwt',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.google', 
 ]
 
 
@@ -114,15 +101,15 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
 	'default': {
 		'ENGINE': 'django.db.backends.mysql',
-		'NAME': 'capstone',
+		'NAME': 'aulo',
 		'USER': 'admin',
 		'PASSWORD': get_secret("DB_PASSWORD"),
-		'HOST': 'capstone.c1mwaqe06dix.ap-northeast-2.rds.amazonaws.com',
+		'HOST': 'ses-aulo.c944s0sio1z7.ap-northeast-2.rds.amazonaws.com',
 		'PORT': '3306',
 	}
 }
 
-AUTH_USER_MODEL = "accounts.User"
+# AUTH_USER_MODEL = "accounts.User"
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
