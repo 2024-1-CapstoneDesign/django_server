@@ -35,7 +35,7 @@ def download_youtube_audio(request):
         try:
             yt = YouTube(url, on_progress_callback=on_progress)
             # 오디오 스트림만 필터링하여 다운로드
-            video = yt.streams.filter(only_audio=True).first()
+            video = yt.streams.get_highest_resolution()
 
             if not video:
                 return JsonResponse({'error': 'No audio stream available for this video'}, status=400)
