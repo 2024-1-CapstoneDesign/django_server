@@ -1,5 +1,5 @@
 from django.http import HttpResponse, JsonResponse
-from pytube import YouTube
+from pytubefix import YouTube
 from moviepy.editor import VideoFileClip
 import os
 import uuid
