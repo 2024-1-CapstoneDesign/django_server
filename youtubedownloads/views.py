@@ -32,7 +32,7 @@ def download_youtube_audio(request):
         temp_audio_file = os.path.join(temp_dir, str(uuid.uuid4()) + '.wav')
 
         try:
-            yt = YouTube(url)
+            yt = YouTube(url, use_po_token=True)
             # 오디오 스트림만 필터링하여 다운로드
             video = yt.streams.filter(only_audio=True).first()
 
