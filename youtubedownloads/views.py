@@ -1,6 +1,5 @@
 from django.http import HttpResponse, JsonResponse
-from pytubefix import YouTube
-from pytubefix.cli import on_progress
+from pytube import YouTube
 from moviepy.editor import VideoFileClip
 import os
 import uuid
@@ -9,8 +8,8 @@ import requests
 def download_youtube_audio(request):
     if request.method == "GET":
         url = request.GET.get('url')
-        start_time = request.GET.get('from')
-        end_time = request.GET.get('to')
+        start_time = float(request.GET.get('from'))
+        end_time = float(request.GET.get('to'))
 
         if not url:
             return JsonResponse({'error': 'Missing url'}, status=400)
@@ -33,9 +32,9 @@ def download_youtube_audio(request):
         temp_audio_file = os.path.join(temp_dir, str(uuid.uuid4()) + '.wav')
 
         try:
-            yt = YouTube(url, on_progress_callback=on_progress)
+            yt = YouTube(url)
             # 오디오 스트림만 필터링하여 다운로드
-            video = yt.streams.get_highest_resolution()
+            video = yt.streams.filter(only_audio=True).first()
 
             if not video:
                 return JsonResponse({'error': 'No audio stream available for this video'}, status=400)
