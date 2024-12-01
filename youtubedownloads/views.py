@@ -6,42 +6,44 @@ import os
 import uuid
 import requests
 
-def custom_po_token_verifier(request):
+def custom_po_token_verifier(visitor_data, po_token):
     """
     Custom verifier to obtain visitorData and poToken.
 
     Returns:
         Tuple[str, str]: visitorData and poToken
     """
-    # You can implement logic here to fetch visitorData and poToken
-    # Example: Fetching from a predefined configuration, environment variable, or any service
-    visitor_data = request.GET.get('visitorData')  # PoToken 사용을 위해 방문자 데이터 추가
-    po_token = request.GET.get('poToken')  # PoToken 추가
     return (visitor_data, po_token)
 
 def download_youtube_audio(request):
     if request.method == "GET":
         url = request.GET.get('url')
-        start_time = float(request.GET.get('from'))
-        end_time = float(request.GET.get('to'))
+        start_time = request.GET.get('from')
+        end_time = request.GET.get('to')
         visitor_data = request.GET.get('visitorData')  # PoToken 사용을 위해 방문자 데이터 추가
         po_token = request.GET.get('poToken')  # PoToken 추가
 
         if not url:
             return JsonResponse({'error': 'Missing url'}, status=400)
-        
+
         if not start_time:
             return JsonResponse({'error': 'Missing start_time'}, status=400)
-        
+
         if not end_time:
             return JsonResponse({'error': 'Missing end_time'}, status=400)
-        
+
         if not visitor_data or not po_token:
             return JsonResponse({'error': 'Missing visitorData or poToken'}, status=400)
 
-        print("url: {0}".format(url))
-        print("from: {0}".format(start_time))
-        print("to: {0}".format(end_time))
+        try:
+            start_time = float(start_time)
+            end_time = float(end_time)
+        except ValueError:
+            return JsonResponse({'error': 'Invalid start_time or end_time'}, status=400)
+
+        print(f"url: {url}")
+        print(f"from: {start_time}")
+        print(f"to: {end_time}")
 
         # 임시 파일을 저장할 경로
         temp_dir = '/tmp'  # 적절한 경로로 변경하세요
@@ -51,13 +53,14 @@ def download_youtube_audio(request):
         temp_audio_file = os.path.join(temp_dir, str(uuid.uuid4()) + '.wav')
 
         try:
+            # 래퍼 함수 생성하여 po_token_verifier에 전달
+            def verifier_wrapper():
+                return custom_po_token_verifier(visitor_data, po_token)
+
             # PoToken과 visitorData를 사용하여 YouTube 객체 생성
-            yt = YouTube(url, use_po_token=True, po_token_verifier=custom_po_token_verifier(request), on_progress_callback=on_progress)
+            yt = YouTube(url, use_po_token=True, po_token_verifier=verifier_wrapper, on_progress_callback=on_progress)
             print(yt.title)
 
-            if not yt:
-                return JsonResponse({'error': 'No audio stream available for this video'}, status=400)
-            
             ys = yt.streams.get_audio_only()
             ys.download(output_path=temp_dir, filename=os.path.basename(temp_video_file))
             print("download success")
@@ -77,13 +80,9 @@ def download_youtube_audio(request):
             audio_clip.write_audiofile(temp_audio_file)
             audio_clip.close()
 
-            with open(temp_audio_file, 'rb') as audio_file:
-                audio_bytes = audio_file.read()
-
             # 외부 서버로 오디오 파일을 전송
-            url = "https://model-o5rcbmo3sq-du.a.run.app/predict"
-            files = {"file": open(temp_audio_file, 'rb')}
-            response = requests.post(url, files=files)
+            with open(temp_audio_file, 'rb') as audio_file:
+                response = requests.post("https://model-o5rcbmo3sq-du.a.run.app/predict", files={"file": audio_file})
 
             # 서버 응답을 그대로 반환
             if response.status_code == 200:
