@@ -34,7 +34,7 @@ def download_youtube_audio(request):
 
             # YouTube 영상 다운로드
             yt = YouTube(url, use_oauth=True, allow_oauth_cache=True, on_progress_callback=on_progress)
-            audio_stream = yt.streams.get_audio_only()
+            audio_stream = yt.streams.get_highest_resolution()
             audio_stream.download(output_path=temp_dir, filename=temp_video_file.split('/')[-1])
             print("영상 다운로드 완료")
 
