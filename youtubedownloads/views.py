@@ -60,7 +60,7 @@ def download_youtube_audio(request):
                 return custom_po_token_verifier(visitor_data, po_token)
 
             # PoToken과 visitorData를 사용하여 YouTube 객체 생성
-            yt = YouTube(url, use_po_token=True, po_token_verifier=verifier_wrapper, on_progress_callback=on_progress)
+            yt = YouTube(url, use_po_token=True, po_token_verifier=verifier_wrapper)
             print(yt.title)
 
             ys = yt.streams.get_audio_only()
