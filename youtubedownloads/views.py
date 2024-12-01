@@ -47,7 +47,7 @@ def download_youtube_audio(request):
         temp_audio_file = os.path.join(temp_dir, str(uuid.uuid4()) + '.wav')
 
         try:
-            yt = YouTube(url, use_oauth=True, allow_oauth_cache=False, on_progress_callback=on_progress)
+            yt = YouTube(url, use_oauth=True, allow_oauth_cache=True)
             print(yt.title)
 
 
