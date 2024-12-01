@@ -64,6 +64,7 @@ def download_youtube_audio(request):
             yt = YouTube(url, use_oauth=True, allow_oauth_cache=True, on_progress_callback=on_progress)
             print(yt.title)
 
+
             ys = yt.streams.get_audio_only()
             ys.download(output_path=temp_dir, filename=os.path.basename(temp_video_file))
             print("download success")
