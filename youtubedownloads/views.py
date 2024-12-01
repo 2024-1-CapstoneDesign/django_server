@@ -1,7 +1,6 @@
 from django.http import HttpResponse, JsonResponse
 from pytubefix import YouTube
 from pytubefix.cli import on_progress
-from pytubefix.helpers import reset_cache
 from moviepy.editor import VideoFileClip
 import os
 import uuid
@@ -13,8 +12,6 @@ def download_youtube_audio(request):
         url = request.GET.get('url')
         start_time = request.GET.get('from')
         end_time = request.GET.get('to')
-        visitor_data = request.GET.get('visitorData')  # PoToken 사용을 위해 방문자 데이터 추가
-        po_token = request.GET.get('poToken')  # PoToken 추가
 
         if not url:
             return JsonResponse({'error': 'Missing url'}, status=400)
@@ -25,8 +22,6 @@ def download_youtube_audio(request):
         if not end_time:
             return JsonResponse({'error': 'Missing end_time'}, status=400)
 
-        if not visitor_data or not po_token:
-            return JsonResponse({'error': 'Missing visitorData or poToken'}, status=400)
 
         try:
             start_time = float(start_time)
@@ -37,8 +32,6 @@ def download_youtube_audio(request):
         print(f"url: {url}")
         print(f"from: {start_time}")
         print(f"to: {end_time}")
-        print(f"visitorData: {visitor_data}")
-        print(f"poToken: {po_token}")
 
         # 임시 파일을 저장할 경로
         temp_dir = '/tmp'  # 적절한 경로로 변경하세요
@@ -48,7 +41,6 @@ def download_youtube_audio(request):
         temp_audio_file = os.path.join(temp_dir, str(uuid.uuid4()) + '.wav')
 
         try:
-            reset_cache()
             yt = YouTube(url, use_oauth=True, allow_oauth_cache=True)
             print(yt.title)
 
