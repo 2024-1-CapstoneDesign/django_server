@@ -44,6 +44,8 @@ def download_youtube_audio(request):
         print(f"url: {url}")
         print(f"from: {start_time}")
         print(f"to: {end_time}")
+        print(f"visitorData: {visitor_data}")
+        print(f"poToken: {po_token}")
 
         # 임시 파일을 저장할 경로
         temp_dir = '/tmp'  # 적절한 경로로 변경하세요
