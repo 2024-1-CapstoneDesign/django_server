@@ -5,16 +5,7 @@ from moviepy.editor import VideoFileClip
 import os
 import uuid
 import requests
-from config.settings import BASE_DIR
 
-# def custom_po_token_verifier(visitor_data, po_token):
-#     """
-#     Custom verifier to obtain visitorData and poToken.
-#
-#     Returns:
-#         Tuple[str, str]: visitorData and poToken
-#     """
-#     return (visitor_data, po_token)
 
 def download_youtube_audio(request):
     if request.method == "GET":
@@ -56,12 +47,7 @@ def download_youtube_audio(request):
         temp_audio_file = os.path.join(temp_dir, str(uuid.uuid4()) + '.wav')
 
         try:
-            # 래퍼 함수 생성하여 po_token_verifier에 전달
-            # def verifier_wrapper():
-            #     return custom_po_token_verifier(visitor_data, po_token)
-
-            # PoToken과 visitorData를 사용하여 YouTube 객체 생성
-            yt = YouTube(url, use_oauth=True, allow_oauth_cache=True, on_progress_callback=on_progress)
+            yt = YouTube(url, client='ANDROID_CREATOR', use_oauth=True, allow_oauth_cache=True, on_progress_callback=on_progress)
             print(yt.title)
 
 
