@@ -1,6 +1,7 @@
 from django.http import HttpResponse, JsonResponse
 from pytubefix import YouTube
 from pytubefix.cli import on_progress
+from pytubefix.helpers import reset_cache
 from moviepy.editor import VideoFileClip
 import os
 import uuid
@@ -47,6 +48,7 @@ def download_youtube_audio(request):
         temp_audio_file = os.path.join(temp_dir, str(uuid.uuid4()) + '.wav')
 
         try:
+            reset_cache()
             yt = YouTube(url, use_oauth=True, allow_oauth_cache=True)
             print(yt.title)
 
