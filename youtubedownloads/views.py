@@ -6,6 +6,19 @@ import os
 import uuid
 import requests
 
+def custom_po_token_verifier(request):
+    """
+    Custom verifier to obtain visitorData and poToken.
+
+    Returns:
+        Tuple[str, str]: visitorData and poToken
+    """
+    # You can implement logic here to fetch visitorData and poToken
+    # Example: Fetching from a predefined configuration, environment variable, or any service
+    visitor_data = request.GET.get('visitorData')  # PoToken 사용을 위해 방문자 데이터 추가
+    po_token = request.GET.get('poToken')  # PoToken 추가
+    return visitor_data, po_token
+
 def download_youtube_audio(request):
     if request.method == "GET":
         url = request.GET.get('url')
@@ -39,7 +52,7 @@ def download_youtube_audio(request):
 
         try:
             # PoToken과 visitorData를 사용하여 YouTube 객체 생성
-            yt = YouTube(url, use_po_token=True, visitor_data=visitor_data, po_token=po_token, on_progress_callback=on_progress)
+            yt = YouTube(url, use_po_token=True, po_token_verifier=custom_po_token_verifier(request), on_progress_callback=on_progress)
             print(yt.title)
 
             if not yt:
