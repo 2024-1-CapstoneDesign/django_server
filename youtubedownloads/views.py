@@ -46,10 +46,11 @@ def download_youtube_audio(request):
 
             ys = yt.streams.get_audio_only()
             ys.download(output_path=temp_dir, filename=os.path.basename(temp_video_file))
+            print("다운로드 완료\n")
 
             # 비디오 파일 열기
             clip = VideoFileClip(temp_video_file)
-            print("파일 열기 완료")
+            print("파일 열기 완료\n")
 
             # 비디오의 총 시간 가져오기
             total_duration = clip.duration
@@ -62,7 +63,7 @@ def download_youtube_audio(request):
             audio_clip = clip.subclip(start_time, end_time).audio
             audio_clip.write_audiofile(temp_audio_file)
             audio_clip.close()
-            print("추출 후 저장 완료")
+            print("추출 후 저장 완료\n")
 
             # 외부 서버로 오디오 파일을 전송
             with open(temp_audio_file, 'rb') as audio_file:
