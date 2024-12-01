@@ -1,8 +1,7 @@
 from django.http import HttpResponse, JsonResponse
 from pytubefix import YouTube
 from pytubefix.cli import on_progress
-from pytubefix.helpers import reset_cache
-from moviepy.editor import VideoFileClip
+from moviepy.video.io import VideoFileClip
 import os
 import uuid
 import requests
