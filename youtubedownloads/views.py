@@ -49,6 +49,7 @@ def download_youtube_audio(request):
             print("다운로드 완료\n")
 
             # 비디오 파일 열기
+            print("파일 열기 전\n")
             clip = VideoFileClip(temp_video_file)
             print("파일 열기 완료\n")
 
