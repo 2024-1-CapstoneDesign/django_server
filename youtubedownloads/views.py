@@ -17,7 +17,7 @@ def custom_po_token_verifier(request):
     # Example: Fetching from a predefined configuration, environment variable, or any service
     visitor_data = request.GET.get('visitorData')  # PoToken 사용을 위해 방문자 데이터 추가
     po_token = request.GET.get('poToken')  # PoToken 추가
-    return visitor_data, po_token
+    return (visitor_data, po_token)
 
 def download_youtube_audio(request):
     if request.method == "GET":
